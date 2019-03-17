@@ -28,6 +28,8 @@ private const val ARG_PARAM2 = "param2"
  */
 class questionFrag : Fragment(), View.OnClickListener {
 
+    var innerquizdata: quizdata = quizdata(0, "a1", "a2", "a3")
+
     override fun onClick(p0: View) {
         //Log.d("Zzz", p0.tag)
         if (p0.tag==1) {
@@ -42,6 +44,15 @@ class questionFrag : Fragment(), View.OnClickListener {
         }
     }
 
+    fun setFields(indata: quizdata)
+    {
+        innerquizdata = indata
+        //Log.d("Zzz", "setFields")
+        //quizButton1.text = indata.answer1
+        //quizButton2.text = indata.answer2
+        //quizButton3.text = indata.answer3
+    }
+
     lateinit var quizLayout: LinearLayout
     lateinit var quizImage: ImageView
     lateinit var quizButton1: Button
@@ -51,6 +62,7 @@ class questionFrag : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
+        Log.d("Zzz", "onCreateView")
         //context.openFileOutput("test.txt", Context.MODE_PRIVATE).write("Bzzzz".toByteArray())
 
         var dm: DisplayMetrics = DisplayMetrics()
@@ -97,6 +109,40 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton2.layoutParams=butParams
         quizButton3.layoutParams=butParams
 
+        //Log.d("Zzz",  innerquizdata.answer1.substring(0,3))
+
+        if (innerquizdata.answer1.substring(0,3)=="XXX")
+        {
+            quizButton1.text = innerquizdata.answer1.drop(3)
+            quizButton1.tag=1
+        }
+        else
+        {
+            quizButton1.text = innerquizdata.answer1
+            quizButton1.tag=0
+        }
+
+        if (innerquizdata.answer2.substring(0,3)=="XXX")
+        {
+            quizButton2.text = innerquizdata.answer2.drop(3)
+            quizButton2.tag=1
+        }
+        else
+        {
+            quizButton2.text = innerquizdata.answer2
+            quizButton2.tag=0
+        }
+
+        if (innerquizdata.answer3.substring(0,3)=="XXX")
+        {
+            quizButton3.text = innerquizdata.answer3.drop(3)
+            quizButton3.tag=1
+        }
+        else
+        {
+            quizButton3.text = innerquizdata.answer3
+            quizButton3.tag=0
+        }
 
         quizLayout.addView(quizImage)
         quizLayout.addView(quizButton1)

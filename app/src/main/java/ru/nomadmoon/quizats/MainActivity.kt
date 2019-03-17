@@ -26,6 +26,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val qdarr: ArrayList<quizdata> = ArrayList()
+        qdarr.add(quizdata(1, "Answer 1","Answer 2","Answer 3"))
+        qdarr.add(quizdata(2, "XXXSome Answer 1","Some Answer 2","Some Answer 3"))
+        qdarr.add(quizdata(3, "XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики "))
+
+
+
         val ft = fragMan.beginTransaction()
 
         ft.replace(R.id.fragmentMy, quefrag)
@@ -52,6 +59,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+      quefrag.setFields(qdarr[2])
     }
 
     override fun onBackPressed() {
