@@ -15,6 +15,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -28,36 +30,62 @@ private const val ARG_PARAM2 = "param2"
  */
 class questionFrag : Fragment(), View.OnClickListener {
 
-    var innerquizdata: quizdata = quizdata(0, "a1", "a2", "a3")
+    var innerquizdata: ArrayList<quizdata> = arrayListOf(quizdata(0, arrayOf("a1", "a2", "a3")))
+    var currentquizdata: quizdata = quizdata(0, arrayOf("a1", "a2", "a3"))
+    var quiznumlist: ArrayList<Int> = arrayListOf(0)
+    lateinit var quizLayout: LinearLayout
+    lateinit var quizImage: ImageView
+    lateinit var quizButton1: Button
+    lateinit var quizButton2: Button
+    lateinit var quizButton3: Button
+    var rint = 0
+
+    var quizButtons: ArrayList<Button> = ArrayList()
 
     override fun onClick(p0: View) {
         //Log.d("Zzz", p0.tag)
-        if (p0.tag==1) {
-            Snackbar.make(view, "Правильный ответ", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        else
-        {
-            Snackbar.make(view, "Неправильный ответ", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+//        if (p0.tag==1) {
+        //          Snackbar.make(view, "Правильный ответ", Snackbar.LENGTH_LONG)
+        //                .setAction("Action", null).show()
+        //  }
+        //       else
+        //     {
+        //       Snackbar.make(view, "Неправильный ответ", Snackbar.LENGTH_LONG)
+        //             .setAction("Action", null).show()
+
+        //}
+        Log.d("Zzzz befo", quiznumlist.toString())
+        quiznumlist.remove(rint)
+        Log.d("Zzzz aft", quiznumlist.toString())
+        rint = Random().nextInt(quiznumlist.count())+1
+        Log.d("Zzzz", rint.toString())
+        currentquizdata = innerquizdata[rint-1]
+
+
+        for (z in 0..2) {
+            if (currentquizdata.answers[z].substring(0, 3) == "XXX") {
+                quizButtons[z].text = currentquizdata.answers[z].drop(3)
+            } else {
+                quizButtons[z].text = currentquizdata.answers[z]
+            }
 
         }
     }
 
-    fun setFields(indata: quizdata)
+    fun setQuizArr(indata: ArrayList<quizdata>)
     {
         innerquizdata = indata
+        quiznumlist.clear()
+        for (i in 1..indata.count()) {
+            quiznumlist.add(i)
+        }
         //Log.d("Zzz", "setFields")
         //quizButton1.text = indata.answer1
         //quizButton2.text = indata.answer2
         //quizButton3.text = indata.answer3
     }
 
-    lateinit var quizLayout: LinearLayout
-    lateinit var quizImage: ImageView
-    lateinit var quizButton1: Button
-    lateinit var quizButton2: Button
-    lateinit var quizButton3: Button
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -89,16 +117,25 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton1.tag=0
         quizButton1.setOnClickListener(this)
 
+        quizButtons.add(quizButton1)
+
+
+
         quizButton2 = Button(activity)
         quizButton2.text = "Zzzzzzzz b2"
         quizButton2.tag=1
         quizButton2.setOnClickListener(this)
 
+        quizButtons.add(quizButton2)
+
 
         quizButton3 = Button(activity)
         quizButton3.text = "Zzzzzzzz b3"
-        quizButton3.tag=0
+        quizButton3.tag=2
         quizButton3.setOnClickListener(this)
+
+        quizButtons.add(quizButton3)
+
 
 
         var butParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, butHeight)
@@ -109,40 +146,58 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton2.layoutParams=butParams
         quizButton3.layoutParams=butParams
 
+        rint = Random().nextInt(quiznumlist.count())+1
+        Log.d("Zzzz", rint.toString())
+        Log.d("Zzzz", quiznumlist.toString())
+        currentquizdata=innerquizdata[rint-1]
+
+
+        for (z in 0..2) {
+            if (currentquizdata.answers[z].substring(0,3)=="XXX")
+            {
+                quizButtons[z].text=currentquizdata.answers[z].drop(3)
+            }
+            else
+            {
+                quizButtons[z].text=currentquizdata.answers[z]
+            }
+
+        }
+
         //Log.d("Zzz",  innerquizdata.answer1.substring(0,3))
 
-        if (innerquizdata.answer1.substring(0,3)=="XXX")
-        {
-            quizButton1.text = innerquizdata.answer1.drop(3)
-            quizButton1.tag=1
-        }
-        else
-        {
-            quizButton1.text = innerquizdata.answer1
-            quizButton1.tag=0
-        }
+        //if (innerquizdata.answer1.substring(0,3)=="XXX")
+       // {
+      //      quizButton1.text = innerquizdata.answer1.drop(3)
+       //     quizButton1.tag=1
+       /// }
+       // else
+      //  {
+      //      quizButton1.text = innerquizdata.answer1
+      //      quizButton1.tag=0
+     //   }
 
-        if (innerquizdata.answer2.substring(0,3)=="XXX")
-        {
-            quizButton2.text = innerquizdata.answer2.drop(3)
-            quizButton2.tag=1
-        }
-        else
-        {
-            quizButton2.text = innerquizdata.answer2
-            quizButton2.tag=0
-        }
+     //   if (innerquizdata.answer2.substring(0,3)=="XXX")
+     //   {
+     //       quizButton2.text = innerquizdata.answer2.drop(3)
+     //       quizButton2.tag=1
+     //   }
+    //    else
+     //   {
+      //      quizButton2.text = innerquizdata.answer2
+      ///      quizButton2.tag=0
+     //   }
 
-        if (innerquizdata.answer3.substring(0,3)=="XXX")
-        {
-            quizButton3.text = innerquizdata.answer3.drop(3)
-            quizButton3.tag=1
-        }
-        else
-        {
-            quizButton3.text = innerquizdata.answer3
-            quizButton3.tag=0
-        }
+     //   if (innerquizdata.answer3.substring(0,3)=="XXX")
+     ///   {
+     ///       quizButton3.text = innerquizdata.answer3.drop(3)
+     //       quizButton3.tag=1
+     //   }
+     //   else
+      //  {
+     //       quizButton3.text = innerquizdata.answer3
+     //       quizButton3.tag=0
+      //  }
 
         quizLayout.addView(quizImage)
         quizLayout.addView(quizButton1)
