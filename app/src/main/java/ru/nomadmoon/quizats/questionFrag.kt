@@ -54,13 +54,39 @@ class questionFrag : Fragment(), View.OnClickListener {
         //             .setAction("Action", null).show()
 
         //}
-        Log.d("Zzzz befo", quiznumlist.toString())
-        quiznumlist.remove(rint)
-        Log.d("Zzzz aft", quiznumlist.toString())
-        rint = Random().nextInt(quiznumlist.count())+1
-        Log.d("Zzzz", rint.toString())
-        currentquizdata = innerquizdata[rint-1]
 
+        Log.d("Zzzz befo", quiznumlist.toString())
+        when (quiznumlist.count()) {
+            0->{
+                Log.d("Zzzz last", "quiznumlist.count() = 0")
+                return
+            }
+            1-> {
+//                val ma = this.activity as MainActivity
+                // ma.fragMan.beginTransaction()
+                // ma.fragMan.popBackStack()
+
+                Log.d("Zzzz last", "quiznumlist.count() = 1")
+
+            }
+           2 -> {
+                Log.d("Zzzz last", "quiznumlist.count() = 2")
+
+            }
+            else -> {
+
+                //quiznumlist.
+                Log.d("Zzzz aft", quiznumlist.toString())
+                rint = Random().nextInt(quiznumlist.count() - 1)
+            }//rint=0
+        }
+
+
+        Log.d("Zzzz rint", rint.toString())
+        Log.d("Zzzz quiznumlist[rint-1]", quiznumlist[rint].toString())
+
+        currentquizdata = innerquizdata[quiznumlist[rint]-1]
+        //Log.d("Zzzz currentquizdata", rint.toString())
 
         for (z in 0..2) {
             if (currentquizdata.answers[z].substring(0, 3) == "XXX") {
@@ -70,6 +96,7 @@ class questionFrag : Fragment(), View.OnClickListener {
             }
 
         }
+        quiznumlist.removeAt(rint)
     }
 
     fun setQuizArr(indata: ArrayList<quizdata>)
@@ -146,10 +173,10 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton2.layoutParams=butParams
         quizButton3.layoutParams=butParams
 
-        rint = Random().nextInt(quiznumlist.count())+1
+        rint = Random().nextInt(quiznumlist.count())
         Log.d("Zzzz", rint.toString())
         Log.d("Zzzz", quiznumlist.toString())
-        currentquizdata=innerquizdata[rint-1]
+        currentquizdata=innerquizdata[quiznumlist[rint]]
 
 
         for (z in 0..2) {
@@ -163,6 +190,7 @@ class questionFrag : Fragment(), View.OnClickListener {
             }
 
         }
+        quiznumlist.removeAt(rint)
 
         //Log.d("Zzz",  innerquizdata.answer1.substring(0,3))
 

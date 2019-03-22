@@ -30,7 +30,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
         qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
         qdarr.add(quizdata(3, arrayOf("XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики ")))
-
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 4","Some Answer 4","Some Answer 4")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 5","Some Answer 5","Some Answer 5")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 6","Some Answer 6","Some Answer 6")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 7","Some Answer 7","Some Answer 7")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 8","Some Answer 8","Some Answer 8")))
 
 
         val ft = fragMan.beginTransaction()
