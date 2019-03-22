@@ -1,6 +1,7 @@
 package ru.nomadmoon.quizats
 
 
+import android.app.Application
 import android.os.Bundle
 import android.app.Fragment
 import android.content.Context
@@ -59,20 +60,25 @@ class questionFrag : Fragment(), View.OnClickListener {
         when (quiznumlist.count()) {
             0->{
                 Log.d("Zzzz last", "quiznumlist.count() = 0")
+                //val ma = this.activity as MainActivity
+                //ma.fragMan.beginTransaction()
+                //ma.fragMan.popBackStack()
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
                 return
             }
             1-> {
 //                val ma = this.activity as MainActivity
                 // ma.fragMan.beginTransaction()
                 // ma.fragMan.popBackStack()
-
+                rint=0
                 Log.d("Zzzz last", "quiznumlist.count() = 1")
 
             }
-           2 -> {
-                Log.d("Zzzz last", "quiznumlist.count() = 2")
+        //   2 -> {
+        //        Log.d("Zzzz last", "quiznumlist.count() = 2")
 
-            }
+        //    }
             else -> {
 
                 //quiznumlist.
@@ -84,18 +90,7 @@ class questionFrag : Fragment(), View.OnClickListener {
 
         Log.d("Zzzz rint", rint.toString())
         Log.d("Zzzz quiznumlist[rint-1]", quiznumlist[rint].toString())
-
-        currentquizdata = innerquizdata[quiznumlist[rint]-1]
-        //Log.d("Zzzz currentquizdata", rint.toString())
-
-        for (z in 0..2) {
-            if (currentquizdata.answers[z].substring(0, 3) == "XXX") {
-                quizButtons[z].text = currentquizdata.answers[z].drop(3)
-            } else {
-                quizButtons[z].text = currentquizdata.answers[z]
-            }
-
-        }
+        displayQuiz(rint)
         quiznumlist.removeAt(rint)
     }
 
@@ -176,7 +171,22 @@ class questionFrag : Fragment(), View.OnClickListener {
         rint = Random().nextInt(quiznumlist.count())
         Log.d("Zzzz", rint.toString())
         Log.d("Zzzz", quiznumlist.toString())
-        currentquizdata=innerquizdata[quiznumlist[rint]]
+        displayQuiz(rint)
+        quiznumlist.removeAt(rint)
+
+
+        quizLayout.addView(quizImage)
+        quizLayout.addView(quizButton1)
+        quizLayout.addView(quizButton2)
+        quizLayout.addView(quizButton3)
+
+        return quizLayout
+
+    }
+
+    fun displayQuiz(quiznumber: Int)
+    {
+        currentquizdata=innerquizdata[quiznumlist[rint]-1]
 
 
         for (z in 0..2) {
@@ -190,51 +200,7 @@ class questionFrag : Fragment(), View.OnClickListener {
             }
 
         }
-        quiznumlist.removeAt(rint)
-
-        //Log.d("Zzz",  innerquizdata.answer1.substring(0,3))
-
-        //if (innerquizdata.answer1.substring(0,3)=="XXX")
-       // {
-      //      quizButton1.text = innerquizdata.answer1.drop(3)
-       //     quizButton1.tag=1
-       /// }
-       // else
-      //  {
-      //      quizButton1.text = innerquizdata.answer1
-      //      quizButton1.tag=0
-     //   }
-
-     //   if (innerquizdata.answer2.substring(0,3)=="XXX")
-     //   {
-     //       quizButton2.text = innerquizdata.answer2.drop(3)
-     //       quizButton2.tag=1
-     //   }
-    //    else
-     //   {
-      //      quizButton2.text = innerquizdata.answer2
-      ///      quizButton2.tag=0
-     //   }
-
-     //   if (innerquizdata.answer3.substring(0,3)=="XXX")
-     ///   {
-     ///       quizButton3.text = innerquizdata.answer3.drop(3)
-     //       quizButton3.tag=1
-     //   }
-     //   else
-      //  {
-     //       quizButton3.text = innerquizdata.answer3
-     //       quizButton3.tag=0
-      //  }
-
-        quizLayout.addView(quizImage)
-        quizLayout.addView(quizButton1)
-        quizLayout.addView(quizButton2)
-        quizLayout.addView(quizButton3)
-
-        return quizLayout
 
     }
-
 
 }
