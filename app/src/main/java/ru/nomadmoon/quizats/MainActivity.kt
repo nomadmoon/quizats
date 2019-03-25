@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import java.io.File
 import java.io.InputStream
 import com.google.gson.reflect.TypeToken
-
+import java.util.zip.ZipFile
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         var qdarr: ArrayList<quizdata> = ArrayList()
-        //qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
-        //qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
-     //   qdarr.add(quizdata(3, arrayOf("XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики ")))
-     //   qdarr.add(quizdata(2, arrayOf("XXXSome Answer 4","Some Answer 4","Some Answer 4")))
+        qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
+        qdarr.add(quizdata(3, arrayOf("XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики ")))
+        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 4","Some Answer 4","Some Answer 4")))
      //   qdarr.add(quizdata(2, arrayOf("XXXSome Answer 5","Some Answer 5","Some Answer 5")))
     ///    qdarr.add(quizdata(2, arrayOf("XXXSome Answer 6","Some Answer 6","Some Answer 6")))
     //    qdarr.add(quizdata(2, arrayOf("XXXSome Answer 7","Some Answer 7","Some Answer 7")))
@@ -46,17 +46,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val ff = File(filesDir.toString().plus("/quiz_questions.txt")).readText()
 
+        val fzip = ZipFile(filesDir.toString().plus("/test.zip"))
+        var zipentries = fzip.entries().iterator()
+
+        for (iii in zipentries)
+        {
+            val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
+            fzip.getInputStream(iii).copyTo(outfile)
+           // Log.d("Aaaaa", iii.name)
+        }
+
+        zipentries = fzip.entries().iterator()
+
+        for (iii in zipentries)
+        {
+           // val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
+           // fzip.getInputStream(iii).copyTo(outfile)
+            Log.d("Aaaaa", iii.name)
+        }
+
 
         val gson = GsonBuilder().setPrettyPrinting().create()
 
         val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
-
-        qdarr = gson.fromJson(ff, collectionType)
+        var qdarr_file: ArrayList<quizdata> = ArrayList()
+        qdarr_file = gson.fromJson(ff, collectionType)
 
         //return
-       // var qdarr_json = gson.toJson(qdarr)
+        //var qdarr_json = gson.toJson(qdarr).toString()
 
-        Log.d("Aaaaa", ff)
+        //Log.d("Aaaaa", fzip.en)
 
         val ft = fragMan.beginTransaction()
 
@@ -85,7 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-      quefrag.setQuizArr(qdarr)
+      quefrag.setQuizArr(qdarr_file)
     }
 
     override fun onBackPressed() {
