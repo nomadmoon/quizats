@@ -18,6 +18,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.io.File
 import java.io.InputStream
+import com.google.gson.reflect.TypeToken
+
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,9 +32,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val qdarr: ArrayList<quizdata> = ArrayList()
-        qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
-        qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
+        var qdarr: ArrayList<quizdata> = ArrayList()
+        //qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
+        //qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
      //   qdarr.add(quizdata(3, arrayOf("XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики ")))
      //   qdarr.add(quizdata(2, arrayOf("XXXSome Answer 4","Some Answer 4","Some Answer 4")))
      //   qdarr.add(quizdata(2, arrayOf("XXXSome Answer 5","Some Answer 5","Some Answer 5")))
@@ -41,13 +44,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
-        val ff = File(filesDir.toString().plus("quiz_question.txt")).readText()
+        val ff = File(filesDir.toString().plus("/quiz_questions.txt")).readText()
 
-        //val gson = GsonBuilder().setPrettyPrinting().create()
 
+        val gson = GsonBuilder().setPrettyPrinting().create()
+
+        val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
+
+        qdarr = gson.fromJson(ff, collectionType)
+
+        //return
        // var qdarr_json = gson.toJson(qdarr)
 
-        //Log.d("Aaaaa", ff)
+        Log.d("Aaaaa", ff)
 
         val ft = fragMan.beginTransaction()
 
