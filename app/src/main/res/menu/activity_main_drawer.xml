@@ -5,33 +5,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_load_file"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Загрузить тест из файла" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_preferences"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Настройки теста" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_exit"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Выход" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Справка">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_hlp"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="Создание теста" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_about"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="О программе" />
         </menu>
     </item>
 

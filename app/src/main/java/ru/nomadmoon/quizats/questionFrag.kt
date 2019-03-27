@@ -40,21 +40,20 @@ class questionFrag : Fragment(), View.OnClickListener {
     lateinit var quizButton2: Button
     lateinit var quizButton3: Button
     var rint = 0
+    var rightAnswer = -1
 
     var quizButtons: ArrayList<Button> = ArrayList()
 
     override fun onClick(p0: View) {
         //Log.d("Zzz", p0.tag)
-//        if (p0.tag==1) {
-        //          Snackbar.make(view, "Правильный ответ", Snackbar.LENGTH_LONG)
-        //                .setAction("Action", null).show()
-        //  }
-        //       else
-        //     {
-        //       Snackbar.make(view, "Неправильный ответ", Snackbar.LENGTH_LONG)
-        //             .setAction("Action", null).show()
-
-        //}
+        if (p0.tag==rightAnswer)
+            {
+                  Snackbar.make(view, "Правильный ответ", Snackbar.LENGTH_LONG).show()
+            }
+        else
+            {
+               Snackbar.make(view, "Неправильный ответ", Snackbar.LENGTH_LONG).show()
+            }
 
         Log.d("Zzzz befo", quiznumlist.toString())
         when (quiznumlist.count()) {
@@ -63,8 +62,8 @@ class questionFrag : Fragment(), View.OnClickListener {
                 //val ma = this.activity as MainActivity
                 //ma.fragMan.beginTransaction()
                 //ma.fragMan.popBackStack()
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show()
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                  //      .setAction("Action", null).show()
                 return
             }
             1-> {
@@ -188,11 +187,14 @@ class questionFrag : Fragment(), View.OnClickListener {
     {
         currentquizdata=innerquizdata[quiznumlist[rint]-1]
 
+        quizImage.setImageBitmap(BitmapFactory.decodeFile(context.filesDir.toString()+"/quizes/1/"+currentquizdata.img_num_id+".jpg"))
 
         for (z in 0..2) {
-            if (currentquizdata.answers[z].substring(0,3)=="XXX")
+            if (currentquizdata.answers[z].substring(0,3)=="QQQ")
             {
+
                 quizButtons[z].text=currentquizdata.answers[z].drop(3)
+                rightAnswer = z
             }
             else
             {

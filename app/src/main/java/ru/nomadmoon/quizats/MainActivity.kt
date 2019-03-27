@@ -14,25 +14,35 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.LinearLayout
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParseException
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.io.File
 import java.io.InputStream
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.content_main.*
 import java.util.zip.ZipFile
+import android.content.Intent
+import ru.nomadmoon.quizats.R.id.textView
+import android.R.attr.data
+import android.app.Activity
+import java.io.FileOutputStream
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     var quefrag = questionFrag()
     var fragMan: FragmentManager = fragmentManager
+    var qdarr: ArrayList<quizdata> = ArrayList()
+    var qmd = quizmetadata("Тест не выбран", "Загрузите файл с тестом")
+    val gson = GsonBuilder().setPrettyPrinting().create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        var qdarr: ArrayList<quizdata> = ArrayList()
+
         qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
         qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
         qdarr.add(quizdata(3, arrayOf("XXXПингвины котики котики котики котики котики котики ","Слоны котики котики котики котики котики котики ","Котики котики котики котики котики котики котики ")))
@@ -42,40 +52,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //    qdarr.add(quizdata(2, arrayOf("XXXSome Answer 7","Some Answer 7","Some Answer 7")))
     //    qdarr.add(quizdata(2, arrayOf("XXXSome Answer 8","Some Answer 8","Some Answer 8")))
 
-
-
-        val ff = File(filesDir.toString().plus("/quiz_questions.txt")).readText()
-
-        val fzip = ZipFile(filesDir.toString().plus("/test.zip"))
-        var zipentries = fzip.entries().iterator()
-
-        for (iii in zipentries)
+        val quizesDir = File(filesDir.toString()+"/quizes")
+        if (!quizesDir.exists()) quizesDir.mkdir()
+        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
+        if (!quizesCount.exists())
         {
-            val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
-            fzip.getInputStream(iii).copyTo(outfile)
-           // Log.d("Aaaaa", iii.name)
-        }
-
-        zipentries = fzip.entries().iterator()
-
-        for (iii in zipentries)
-        {
-           // val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
-           // fzip.getInputStream(iii).copyTo(outfile)
-            Log.d("Aaaaa", iii.name)
+            quizesCount.createNewFile()
+            quizesCount.writeText("0")
         }
 
 
-        val gson = GsonBuilder().setPrettyPrinting().create()
+                // loadFromZip()
+
+
+        val quizQuestionsJSON = File(filesDir.toString().plus("/quizes/1/quiz_questions.txt")).readText()
+
 
         val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
         var qdarr_file: ArrayList<quizdata> = ArrayList()
-        qdarr_file = gson.fromJson(ff, collectionType)
+
+        try {
+            qdarr_file = gson.fromJson(quizQuestionsJSON, collectionType)
+        }
+        catch (e: JsonParseException)
+        {
+           Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+        }
+
+
+
+
+
+
+
 
         //return
-        //var qdarr_json = gson.toJson(qdarr).toString()
+       // var qdarr_json = gson.toJson(qmd).toString()
 
-        //Log.d("Aaaaa", fzip.en)
+      //  Log.d("Aaaaa", qdarr_json)
 
         val ft = fragMan.beginTransaction()
 
@@ -107,6 +121,178 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
       quefrag.setQuizArr(qdarr_file)
     }
 
+    fun loadFromZip()
+    {
+
+
+        // TEMPORARY!!!!
+        val dirtodel = File(filesDir.toString().plus("/quizes/1"))
+        if (dirtodel.exists()) dirtodel.deleteRecursively()
+
+        val fzip = ZipFile(filesDir.toString().plus("/test.zip"))
+        var zipentries = fzip.entries().iterator()
+
+       // var meta_exists: Boolean = false
+       // var questions_exists: Boolean = false
+
+    //    for (zipentry in zipentries)
+     //   {
+            // val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
+            // fzip.getInputStream(iii).copyTo(outfile)
+     //       if (zipentry.name=="quiz_questions.txt") questions_exists=true
+          //  if (zipentry.name=="quiz_metadata.txt") meta_exists=true
+
+      //  }
+
+        if (fzip.getEntry("quiz_questions.txt")==null) {
+            Snackbar.make(findViewById(R.id.rootView), "Отсутствует файл с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (fzip.getEntry("quiz_metadata.txt")==null) {
+            Snackbar.make(findViewById(R.id.rootView), "Отсутствует файл с метаданными (quiz_metadata.txt)", Snackbar.LENGTH_LONG).show()
+            return
+        }
+
+        var quizQuestionsFile = fzip.getInputStream(fzip.getEntry("quiz_questions.txt"))
+        var quizQuestionsJSON = quizQuestionsFile.bufferedReader().readText()
+
+        val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
+        var qdarr_test: ArrayList<quizdata> = ArrayList()
+
+        try {
+            qdarr_test = gson.fromJson(quizQuestionsJSON, collectionType)
+        }
+        catch (e: JsonParseException)
+        {
+            Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+        }
+
+
+        var quizMetaFile = fzip.getInputStream(fzip.getEntry("quiz_metadata.txt"))
+        var quizMetaJSON = quizMetaFile.bufferedReader().readText()
+
+        var quizMetaTest =  quizmetadata("Тест не выбран", "Загрузите файл с тестом")
+
+        try {
+            quizMetaTest = gson.fromJson(quizMetaJSON, quizmetadata::class.java)
+        }
+        catch (e: JsonParseException)
+        {
+            Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с метаданными (quiz_metadata.txt)", Snackbar.LENGTH_LONG).show()
+        }
+
+        for (qdarr_item in qdarr_test)
+        {
+            if (fzip.getEntry(qdarr_item.img_num_id.toString()+".jpg")==null)
+            {
+                Snackbar.make(findViewById(R.id.rootView), "Не найден файл "+qdarr_item.img_num_id.toString()+".jpg", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+         zipentries = fzip.entries().iterator()
+
+        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
+        //var cc = quizesCount.readText().toInt()
+        //cc=cc+1
+        //quizesCount.writeText(cc.toString())
+
+        //var quizesDirCC = 1
+        //val quizesDirCC = File(filesDir.toString()+"/quizes/"+cc)
+        val quizesDirCC = File(filesDir.toString()+"/quizes/1")
+
+        if (!quizesDirCC.exists()) quizesDirCC.mkdir()
+
+        for (iii in zipentries)
+        {
+            val outfile = File(quizesDirCC.toString()+"/"+iii.name).outputStream()
+            fzip.getInputStream(iii).copyTo(outfile)
+            // Log.d("Aaaaa", iii.name)
+        }
+
+        File(filesDir.toString()+"/test.zip").delete()
+
+        }
+
+
+
+    fun loadFromZipStream()
+    {
+        val fzip = ZipFile(filesDir.toString().plus("/test.zip"))
+        var zipentries = fzip.entries().iterator()
+
+
+
+        if (fzip.getEntry("quiz_questions.txt")==null) {
+            Snackbar.make(findViewById(R.id.rootView), "Отсутствует файл с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if (fzip.getEntry("quiz_metadata.txt")==null) {
+            Snackbar.make(findViewById(R.id.rootView), "Отсутствует файл с метаданными (quiz_metadata.txt)", Snackbar.LENGTH_LONG).show()
+            return
+        }
+
+        var quizQuestionsFile = fzip.getInputStream(fzip.getEntry("quiz_questions.txt"))
+        var quizQuestionsJSON = quizQuestionsFile.bufferedReader().readText()
+
+        val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
+        var qdarr_test: ArrayList<quizdata> = ArrayList()
+
+        try {
+            qdarr_test = gson.fromJson(quizQuestionsJSON, collectionType)
+        }
+        catch (e: JsonParseException)
+        {
+            Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+        }
+
+
+        var quizMetaFile = fzip.getInputStream(fzip.getEntry("quiz_metadata.txt"))
+        var quizMetaJSON = quizMetaFile.bufferedReader().readText()
+
+        var quizMetaTest =  quizmetadata("Тест не выбран", "Загрузите файл с тестом")
+
+        try {
+            quizMetaTest = gson.fromJson(quizMetaJSON, quizmetadata::class.java)
+        }
+        catch (e: JsonParseException)
+        {
+            Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с метаданными (quiz_metadata.txt)", Snackbar.LENGTH_LONG).show()
+        }
+
+        for (qdarr_item in qdarr_test)
+        {
+            if (fzip.getEntry(qdarr_item.img_num_id.toString()+".jpg")==null)
+            {
+                Snackbar.make(findViewById(R.id.rootView), "Не найден файл "+qdarr_item.img_num_id.toString()+".jpg", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        zipentries = fzip.entries().iterator()
+
+        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
+        var cc = quizesCount.readText().toInt()
+        cc=cc+1
+        quizesCount.writeText(cc.toString())
+
+        var quizesDirCC = 1
+        //    val quizesDirCC = File(filesDir.toString()+"/quizes/"+cc)
+        //   if (!quizesDirCC.exists()) quizesDirCC.mkdir()
+
+        for (iii in zipentries)
+        {
+            val outfile = File(quizesDirCC.toString()+"/"+iii.name).outputStream()
+            fzip.getInputStream(iii).copyTo(outfile)
+            // Log.d("Aaaaa", iii.name)
+        }
+
+
+
+    }
+
+
+
+
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -134,22 +320,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
+            R.id.nav_load_file -> {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "*/*"
+                startActivityForResult(intent, 10510)
 
             }
-            R.id.nav_slideshow -> {
+            R.id.nav_preferences -> {
 
             }
-            R.id.nav_manage -> {
+            R.id.nav_exit -> {
 
             }
-            R.id.nav_share -> {
+            R.id.nav_hlp -> {
 
             }
-            R.id.nav_send -> {
+            R.id.nav_about -> {
 
             }
         }
@@ -157,4 +343,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            10510 -> if (resultCode === Activity.RESULT_OK) {
+                //val FilePath = data.getData().path
+                //textView.setText(FilePath)
+                var filetodel = File(filesDir.toString()+"/test.zip")
+                if (filetodel.exists()) filetodel.delete()
+
+                val inpstr = getContentResolver().openInputStream(data?.data)
+
+                try {
+                    val out = FileOutputStream(filesDir.toString()+"/test.zip")
+                    try {
+                        inpstr.copyTo(out)
+                    } finally {
+                        out.close()
+                    }
+                } finally {
+                    inpstr.close()
+                }
+
+                loadFromZip()
+
+                Snackbar.make(findViewById(R.id.rootView), "RESULT_OK", Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
 }
+
+// https://ufile.io/4uqkv
+// https://ufile.io/kf7sz
