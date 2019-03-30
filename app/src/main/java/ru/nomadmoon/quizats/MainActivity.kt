@@ -26,6 +26,8 @@ import android.content.Intent
 import ru.nomadmoon.quizats.R.id.textView
 import android.R.attr.data
 import android.app.Activity
+import android.content.Context
+import android.content.SharedPreferences
 import java.io.FileOutputStream
 
 
@@ -37,11 +39,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var qmd = quizmetadata("Тест не выбран", "Загрузите файл с тестом")
     val gson = GsonBuilder().setPrettyPrinting().create()
 
+    lateinit var settings: SharedPreferences
+    lateinit var sideMenu: Menu
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        settings = getSharedPreferences("quizats", Context.MODE_PRIVATE)
+
+        //if (!settings.contains("selected_test"))
+        //    settings.edit().putInt("selected_test", 1).apply()
+
+        var navigation = findViewById<NavigationView>(R.id.nav_view)
+        sideMenu = navigation.menu
+
+        updateStartButton()
+
+//        start.setEnabled(false)
 
         qdarr.add(quizdata(1, arrayOf("Answer 1","Answer 2","Answer 3")))
         qdarr.add(quizdata(2, arrayOf("XXXSome Answer 1","Some Answer 2","Some Answer 3")))
@@ -54,7 +70,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val quizesDir = File(filesDir.toString()+"/quizes")
         if (!quizesDir.exists()) quizesDir.mkdir()
-        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
+        val quizesCount = File(filesDir.toString()+"/counter.txt")
         if (!quizesCount.exists())
         {
             quizesCount.createNewFile()
@@ -62,22 +78,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
 
-                // loadFromZip()
-
-
-        val quizQuestionsJSON = File(filesDir.toString().plus("/quizes/1/quiz_questions.txt")).readText()
-
-
-        val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
-        var qdarr_file: ArrayList<quizdata> = ArrayList()
-
-        try {
-            qdarr_file = gson.fromJson(quizQuestionsJSON, collectionType)
-        }
-        catch (e: JsonParseException)
-        {
-           Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
-        }
+                 //loadFromZip()
 
 
 
@@ -86,23 +87,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
 
-        //return
-       // var qdarr_json = gson.toJson(qmd).toString()
-
-      //  Log.d("Aaaaa", qdarr_json)
-
-        val ft = fragMan.beginTransaction()
-
-        ft.replace(R.id.fragmentMy, quefrag)
-        ft.commit()
-
-        var test_BUT: Button = Button(this)
-        test_BUT.text = "Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo Booo "
-
-        var butParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100)
-
-        //var test_FL = findViewById<LinearLayout>(R.id.fragmentLayout)
-       // test_FL.addView(test_BUT)
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -118,7 +102,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
-      quefrag.setQuizArr(qdarr_file)
+
     }
 
     fun loadFromZip()
@@ -126,23 +110,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         // TEMPORARY!!!!
-        val dirtodel = File(filesDir.toString().plus("/quizes/1"))
-        if (dirtodel.exists()) dirtodel.deleteRecursively()
+  //      val dirtodel = File(filesDir.toString().plus("/quizes/1"))
+ //       if (dirtodel.exists()) dirtodel.deleteRecursively()
 
         val fzip = ZipFile(filesDir.toString().plus("/test.zip"))
         var zipentries = fzip.entries().iterator()
 
-       // var meta_exists: Boolean = false
-       // var questions_exists: Boolean = false
-
-    //    for (zipentry in zipentries)
-     //   {
-            // val outfile = File(filesDir.toString()+"/test_unzip/"+iii.name).outputStream()
-            // fzip.getInputStream(iii).copyTo(outfile)
-     //       if (zipentry.name=="quiz_questions.txt") questions_exists=true
-          //  if (zipentry.name=="quiz_metadata.txt") meta_exists=true
-
-      //  }
 
         if (fzip.getEntry("quiz_questions.txt")==null) {
             Snackbar.make(findViewById(R.id.rootView), "Отсутствует файл с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
@@ -191,14 +164,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
          zipentries = fzip.entries().iterator()
 
-        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
-        //var cc = quizesCount.readText().toInt()
-        //cc=cc+1
-        //quizesCount.writeText(cc.toString())
+        val quizesCount = File(filesDir.toString()+"/counter.txt")
+        var cc = quizesCount.readText().toInt()
+        cc=cc+1
+        quizesCount.writeText(cc.toString())
 
         //var quizesDirCC = 1
-        //val quizesDirCC = File(filesDir.toString()+"/quizes/"+cc)
-        val quizesDirCC = File(filesDir.toString()+"/quizes/1")
+        val quizesDirCC = File(filesDir.toString()+"/quizes/"+cc)
+        //val quizesDirCC = File(filesDir.toString()+"/quizes/1")
 
         if (!quizesDirCC.exists()) quizesDirCC.mkdir()
 
@@ -269,7 +242,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         zipentries = fzip.entries().iterator()
 
-        val quizesCount = File(filesDir.toString()+"/quizes/counter.txt")
+        val quizesCount = File(filesDir.toString()+"/counter.txt")
         var cc = quizesCount.readText().toInt()
         cc=cc+1
         quizesCount.writeText(cc.toString())
@@ -320,6 +293,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_select_test -> {
+
+            }
+            R.id.nav_start_test -> {
+                val selected_test = settings.getInt("selected_test", -1)
+                val quizQuestionsJSON = File(filesDir.toString().plus("/quizes/"+selected_test+"/quiz_questions.txt")).readText()
+                val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
+                var qdarr_file: ArrayList<quizdata> = ArrayList()
+
+                try {
+                    qdarr_file = gson.fromJson(quizQuestionsJSON, collectionType)
+                } catch (e: JsonParseException) {
+                    Snackbar.make(findViewById(R.id.rootView), "Ошибка разбора JSON файла с вопросами (quiz_questions.txt)", Snackbar.LENGTH_LONG).show()
+                }
+
+                quefrag.setQuizArr(qdarr_file)
+
+                val ft = fragMan.beginTransaction()
+
+                ft.replace(R.id.fragmentMy, quefrag)
+                ft.commit()
+            }
             R.id.nav_load_file -> {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.type = "*/*"
@@ -342,6 +337,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun updateStartButton()
+    {
+        val selected_test = settings.getInt("selected_test", -1)
+        sideMenu.findItem(R.id.nav_start_test).setEnabled(false)
+        if (selected_test==-1) return
+
+        if (File(filesDir.toString()+"/quizes/"+selected_test).exists()) sideMenu.findItem(R.id.nav_start_test).setEnabled(true)
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

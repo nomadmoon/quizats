@@ -5,6 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_select_test"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Выбрать тест" />
+        <item
+            android:id="@+id/nav_start_test"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Начать тест" />
+        <item
             android:id="@+id/nav_load_file"
             android:icon="@drawable/ic_menu_camera"
             android:title="Загрузить тест из файла" />
