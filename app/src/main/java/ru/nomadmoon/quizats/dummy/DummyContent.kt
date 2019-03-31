@@ -21,7 +21,7 @@ object DummyContent {
      */
     val ITEM_MAP: MutableMap<String, DummyItem> = HashMap()
 
-    private val COUNT = 25
+    private val COUNT = 3
 
     init {
         // Add some sample items.
@@ -30,10 +30,16 @@ object DummyContent {
         }
     }
 
-    private fun addItem(item: DummyItem) {
+    fun addItem(item: DummyItem) {
         ITEMS.add(item)
         ITEM_MAP.put(item.id, item)
     }
+
+    fun clearItems() {
+        ITEMS.clear()
+        ITEM_MAP.clear()
+    }
+
 
     private fun createDummyItem(position: Int): DummyItem {
         return DummyItem(position.toString(), "Item " + position, makeDetails(position))
@@ -51,7 +57,7 @@ object DummyContent {
     /**
      * A dummy item representing a piece of content.
      */
-    data class DummyItem(val id: String, val content: String, val details: String) {
+    data class DummyItem(val id: String, val content: String, val dirId: String) {
         override fun toString(): String = content
     }
 }

@@ -2,7 +2,7 @@ package ru.nomadmoon.quizats
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -31,6 +31,8 @@ class SelectQuizFragment : Fragment() {
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+
+        //listener = activity as OnListFragmentInteractionListener
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

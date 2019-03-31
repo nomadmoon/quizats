@@ -28,12 +28,15 @@ import android.R.attr.data
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import ru.nomadmoon.quizats.dummy.DummyContent
 import java.io.FileOutputStream
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, SelectQuizFragment.OnListFragmentInteractionListener {
+
 
     var quefrag = questionFrag()
+    var selfrag = SelectQuizFragment()
     var fragMan: FragmentManager = fragmentManager
     var qdarr: ArrayList<quizdata> = ArrayList()
     var qmd = quizmetadata("Тест не выбран", "Загрузите файл с тестом")
@@ -47,10 +50,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+
+
         settings = getSharedPreferences("quizats", Context.MODE_PRIVATE)
 
         //if (!settings.contains("selected_test"))
-        //    settings.edit().putInt("selected_test", 1).apply()
+         //   settings.edit().putString("selected_test", "2").apply()
 
         var navigation = findViewById<NavigationView>(R.id.nav_view)
         sideMenu = navigation.menu
@@ -295,9 +300,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_select_test -> {
 
+                DummyContent.clearItems()
+                val qzes = File(filesDir.toString().plus("/quizes/"))
+
+                for (dir_entry in qzes.list()) {
+                    Log.d("Bbbb", dir_entry)
+                    val qzMetaFile = File(filesDir.toString()+"/quizes/"+dir_entry+"/quiz_metadata.txt")
+
+                    var localMeta = gson.fromJson<quizmetadata>(qzMetaFile.readText(), quizmetadata::class.java)
+
+                    DummyContent.addItem(DummyContent.DummyItem(localMeta.name + " ("+dir_entry+")", localMeta.description, dir_entry))
+                }
+
+                val ft = fragMan.beginTransaction()
+
+                ft.replace(R.id.fragmentMy, selfrag)
+                ft.commit()
             }
             R.id.nav_start_test -> {
-                val selected_test = settings.getInt("selected_test", -1)
+                val selected_test = settings.getString("selected_test", "-1")
+                if (selected_test=="-1") return false
+
                 val quizQuestionsJSON = File(filesDir.toString().plus("/quizes/"+selected_test+"/quiz_questions.txt")).readText()
                 val collectionType = object : TypeToken<ArrayList<quizdata>>() {}.type
                 var qdarr_file: ArrayList<quizdata> = ArrayList()
@@ -341,13 +364,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun updateStartButton()
     {
-        val selected_test = settings.getInt("selected_test", -1)
+        val selected_test = settings.getString("selected_test", "-1")
         sideMenu.findItem(R.id.nav_start_test).setEnabled(false)
-        if (selected_test==-1) return
+        if (selected_test=="-1") return
 
         if (File(filesDir.toString()+"/quizes/"+selected_test).exists()) sideMenu.findItem(R.id.nav_start_test).setEnabled(true)
 
 
+    }
+
+
+    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+       // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //Log.d("Cccc", item!!.dirId)
+
+        if (item!=null) {
+            settings.edit().putString("selected_test", item.dirId).apply()
+            updateStartButton()
+        }
+
+        val ft = fragMan.beginTransaction()
+
+        ft.remove(selfrag)
+        ft.commit()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

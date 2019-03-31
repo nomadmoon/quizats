@@ -139,6 +139,7 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton1.setOnClickListener(this)
 
         quizButtons.add(quizButton1)
+ //       quizButtons[0]=quizButton1
 
 
 
@@ -148,6 +149,7 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton2.setOnClickListener(this)
 
         quizButtons.add(quizButton2)
+  //      quizButtons[1]=quizButton2
 
 
         quizButton3 = Button(activity)
@@ -156,6 +158,7 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizButton3.setOnClickListener(this)
 
         quizButtons.add(quizButton3)
+   //     quizButtons[2]=quizButton3
 
 
 
