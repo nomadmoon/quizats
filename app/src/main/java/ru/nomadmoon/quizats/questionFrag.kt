@@ -30,6 +30,37 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class questionFrag : Fragment(), View.OnClickListener {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        quizButton1 = Button(activity)
+        quizButton1.text = "Zzzzzzzz b1 Zzzzzzzz "
+        quizButton1.tag=0
+        quizButton1.setOnClickListener(this)
+
+        quizButtons.add(quizButton1)
+   //     quizButtons[0]=quizButton1
+
+
+
+        quizButton2 = Button(activity)
+        quizButton2.text = "Zzzzzzzz b2"
+        quizButton2.tag=1
+        quizButton2.setOnClickListener(this)
+
+        quizButtons.add(quizButton2)
+    //    quizButtons[1]=quizButton2
+
+
+        quizButton3 = Button(activity)
+        quizButton3.text = "Zzzzzzzz b3"
+        quizButton3.tag=2
+        quizButton3.setOnClickListener(this)
+
+        quizButtons.add(quizButton3)
+    //    quizButtons[2]=quizButton3
+
+    }
 
     var innerquizdata: ArrayList<quizdata> = arrayListOf(quizdata(0, arrayOf("a1", "a2", "a3")))
     var currentquizdata: quizdata = quizdata(0, arrayOf("a1", "a2", "a3"))
@@ -43,6 +74,7 @@ class questionFrag : Fragment(), View.OnClickListener {
     var rightAnswer = -1
 
     var quizButtons: ArrayList<Button> = ArrayList()
+
 
     override fun onClick(p0: View) {
         //Log.d("Zzz", p0.tag)
@@ -133,31 +165,31 @@ class questionFrag : Fragment(), View.OnClickListener {
         quizImage.layoutParams = imgParams
         quizImage.setImageBitmap(BitmapFactory.decodeFile(context.filesDir.toString()+"/ping.jpg"))
 
-        quizButton1 = Button(activity)
-        quizButton1.text = "Zzzzzzzz b1 Zzzzzzzz "
-        quizButton1.tag=0
-        quizButton1.setOnClickListener(this)
+  //      quizButton1 = Button(activity)
+   //     quizButton1.text = "Zzzzzzzz b1 Zzzzzzzz "
+  //      quizButton1.tag=0
+  //      quizButton1.setOnClickListener(this)
 
-        quizButtons.add(quizButton1)
- //       quizButtons[0]=quizButton1
-
-
-
-        quizButton2 = Button(activity)
-        quizButton2.text = "Zzzzzzzz b2"
-        quizButton2.tag=1
-        quizButton2.setOnClickListener(this)
-
-        quizButtons.add(quizButton2)
-  //      quizButtons[1]=quizButton2
+  //      quizButtons.add(quizButton1)
+  //      quizButtons[0]=quizButton1
 
 
-        quizButton3 = Button(activity)
-        quizButton3.text = "Zzzzzzzz b3"
-        quizButton3.tag=2
-        quizButton3.setOnClickListener(this)
 
-        quizButtons.add(quizButton3)
+  //      quizButton2 = Button(activity)
+   //     quizButton2.text = "Zzzzzzzz b2"
+  //      quizButton2.tag=1
+   //     quizButton2.setOnClickListener(this)
+
+    //    quizButtons.add(quizButton2)
+   //    quizButtons[1]=quizButton2
+
+
+   //     quizButton3 = Button(activity)
+   //     quizButton3.text = "Zzzzzzzz b3"
+  //      quizButton3.tag=2
+  //      quizButton3.setOnClickListener(this)
+
+  //      quizButtons.add(quizButton3)
    //     quizButtons[2]=quizButton3
 
 
