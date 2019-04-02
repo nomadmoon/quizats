@@ -30,8 +30,23 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class questionFrag : Fragment(), View.OnClickListener {
+    override fun onDestroy() {
+        super.onDestroy()
+        quizButtons.clear()
+        arrayOfAnswers.clear()
+        innerquizdata.clear()
+        quiznumlist.clear()
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+       // quizButtons.clear()
+        //arrayOfAnswers.clear()
+        //innerquizdata.clear()
+        //quiznumlist.clear()
+
 
         quizButton1 = Button(activity)
         quizButton1.text = "Zzzzzzzz b1 Zzzzzzzz "
@@ -62,8 +77,10 @@ class questionFrag : Fragment(), View.OnClickListener {
 
     }
 
+
     var innerquizdata: ArrayList<quizdata> = arrayListOf(quizdata(0, arrayOf("a1", "a2", "a3")))
     var currentquizdata: quizdata = quizdata(0, arrayOf("a1", "a2", "a3"))
+    var currentquiznumber: Int = -1
     var quiznumlist: ArrayList<Int> = arrayListOf(0)
     lateinit var quizLayout: LinearLayout
     lateinit var quizImage: ImageView
@@ -74,10 +91,12 @@ class questionFrag : Fragment(), View.OnClickListener {
     var rightAnswer = -1
 
     var quizButtons: ArrayList<Button> = ArrayList()
-
+    var arrayOfAnswers = ArrayList<quizresult>()
 
     override fun onClick(p0: View) {
         //Log.d("Zzz", p0.tag)
+        arrayOfAnswers[currentquiznumber].answer=p0.tag as Int
+
         if (p0.tag==rightAnswer)
             {
                   Snackbar.make(view, "Правильный ответ", Snackbar.LENGTH_LONG).show()
@@ -96,6 +115,11 @@ class questionFrag : Fragment(), View.OnClickListener {
                 //ma.fragMan.popBackStack()
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show()
+
+                val act = activity as MainActivity
+                act.showResultFragment(innerquizdata, arrayOfAnswers)
+
+                //showResultFragment
                 return
             }
             1-> {
@@ -131,7 +155,9 @@ class questionFrag : Fragment(), View.OnClickListener {
         quiznumlist.clear()
         for (i in 1..indata.count()) {
             quiznumlist.add(i)
+            arrayOfAnswers.add(quizresult(-1,-1))
         }
+
         //Log.d("Zzz", "setFields")
         //quizButton1.text = indata.answer1
         //quizButton2.text = indata.answer2
@@ -222,6 +248,8 @@ class questionFrag : Fragment(), View.OnClickListener {
     {
         currentquizdata=innerquizdata[quiznumlist[rint]-1]
 
+        currentquiznumber = quiznumlist[rint]-1
+
         quizImage.setImageBitmap(BitmapFactory.decodeFile(context.filesDir.toString()+"/quizes/1/"+currentquizdata.img_num_id+".jpg"))
 
         for (z in 0..2) {
@@ -230,6 +258,7 @@ class questionFrag : Fragment(), View.OnClickListener {
 
                 quizButtons[z].text=currentquizdata.answers[z].drop(3)
                 rightAnswer = z
+                arrayOfAnswers[quiznumlist[rint]-1].right_answer=z
             }
             else
             {

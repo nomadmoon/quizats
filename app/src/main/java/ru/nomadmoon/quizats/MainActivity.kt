@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     var quefrag = questionFrag()
     var selfrag = SelectQuizFragment()
+    var resfrag = ResultFragment()
     var fragMan: FragmentManager = fragmentManager
     var qdarr: ArrayList<quizdata> = ArrayList()
     var qmd = quizmetadata("Тест не выбран", "Загрузите файл с тестом")
@@ -371,6 +372,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (File(filesDir.toString()+"/quizes/"+selected_test).exists()) sideMenu.findItem(R.id.nav_start_test).setEnabled(true)
 
 
+    }
+
+    fun showResultFragment(questions: ArrayList<quizdata>, answers: ArrayList<quizresult>)
+    {
+        var rightAnwrsCount = 0
+
+        for (answr in answers)
+            {
+            if (answr.answer==answr.right_answer) rightAnwrsCount++
+            }
+
+        resfrag.resultText="Количество правильных ответов: "+rightAnwrsCount
+
+        val ft = fragMan.beginTransaction()
+        ft.replace(R.id.fragmentMy, resfrag)
+        ft.commit()
     }
 
 
