@@ -3,6 +3,8 @@ package ru.nomadmoon.quizats
 
 import android.os.Bundle
 import android.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,14 @@ private const val ARG_PARAM2 = "param2"
  *
  */
 class ResultFragment : Fragment() {
+    override fun onStart() {
+        super.onStart()
+        countRightAnswers()
+    }
+
+    var questions: ArrayList<quizdata> = arrayListOf(quizdata(-1, arrayOf("")))
+    var answers: ArrayList<quizresult> = arrayListOf(quizresult(-1,-1))
+
 
     var resultText: String = ""
 
@@ -27,11 +37,37 @@ class ResultFragment : Fragment() {
         // Inflate the layout for this fragment
         val inflated: View = inflater.inflate(R.layout.fragment_result, container, false)
 
+        countRightAnswers()
+
         val tv = inflated.findViewById<TextView>(R.id.resultTextView)
+        val recV = inflated.findViewById<RecyclerView>(R.id.resultRecyclerView)
+        recV.adapter = ResultRecyclerViewAdapter(questions, answers)
+        recV.layoutManager=LinearLayoutManager(context)
+
         tv.text=resultText
 
         return inflated
     }
 
+    fun setQandA(ques: ArrayList<quizdata>, answ: ArrayList<quizresult>)
+    {
+        questions=ques
+        answers=answ
+    }
+
+
+
+    fun countRightAnswers()
+    {
+        var rightAnwrsCount = 0
+
+        for (answr in answers)
+        {
+            if (answr.answer==answr.right_answer) rightAnwrsCount++
+        }
+
+        resultText="Количество правильных ответов: "+rightAnwrsCount
+
+    }
 
 }

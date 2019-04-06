@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var qmd = quizmetadata("Тест не выбран", "Загрузите файл с тестом")
     val gson = GsonBuilder().setPrettyPrinting().create()
 
+    var main_questions: ArrayList<quizdata> = arrayListOf(quizdata(-1, arrayOf("")))
+    var main_answers: ArrayList<quizresult> = arrayListOf(quizresult(-1,-1))
+
     lateinit var settings: SharedPreferences
     lateinit var sideMenu: Menu
 
@@ -381,16 +384,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     {
         var rightAnwrsCount = 0
 
-        for (answr in answers)
-            {
-            if (answr.answer==answr.right_answer) rightAnwrsCount++
-            }
+      //  for (answr in answers)
+       //     {
+      //      if (answr.answer==answr.right_answer) rightAnwrsCount++
+      //      }
+
+        main_questions.clear()
+        main_questions.addAll(questions)
+        main_answers.clear()
+        main_answers.addAll(answers)
 
         resfrag.resultText="Количество правильных ответов: "+rightAnwrsCount
+
+        resfrag.setQandA(main_questions, main_answers)
+
+
+
 
         val ft = fragMan.beginTransaction()
         ft.replace(R.id.fragmentMy, resfrag)
         ft.commit()
+
     }
 
 
