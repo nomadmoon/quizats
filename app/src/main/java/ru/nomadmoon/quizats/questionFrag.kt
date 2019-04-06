@@ -81,6 +81,7 @@ class questionFrag : Fragment(), View.OnClickListener {
     var innerquizdata: ArrayList<quizdata> = arrayListOf(quizdata(0, arrayOf("a1", "a2", "a3")))
     var currentquizdata: quizdata = quizdata(0, arrayOf("a1", "a2", "a3"))
     var currentquiznumber: Int = -1
+    var currentquizdir: String = "-1"
     var quiznumlist: ArrayList<Int> = arrayListOf(0)
     lateinit var quizLayout: LinearLayout
     lateinit var quizImage: ImageView
@@ -165,6 +166,9 @@ class questionFrag : Fragment(), View.OnClickListener {
     }
 
 
+    fun setQuizDir(selected_test: String) {
+        currentquizdir = selected_test
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -250,7 +254,7 @@ class questionFrag : Fragment(), View.OnClickListener {
 
         currentquiznumber = quiznumlist[rint]-1
 
-        quizImage.setImageBitmap(BitmapFactory.decodeFile(context.filesDir.toString()+"/quizes/1/"+currentquizdata.img_num_id+".jpg"))
+        quizImage.setImageBitmap(BitmapFactory.decodeFile(context.filesDir.toString()+"/quizes/"+currentquizdir+"/"+currentquizdata.img_num_id+".jpg"))
 
         for (z in 0..2) {
             if (currentquizdata.answers[z].substring(0,3)=="QQQ")

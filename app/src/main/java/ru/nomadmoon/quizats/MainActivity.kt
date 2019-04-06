@@ -316,6 +316,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val ft = fragMan.beginTransaction()
 
                 ft.replace(R.id.fragmentMy, selfrag)
+               // ft.addToBackStack(null)
                 ft.commit()
             }
             R.id.nav_start_test -> {
@@ -333,10 +334,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 quefrag.setQuizArr(qdarr_file)
+                quefrag.setQuizDir(selected_test)
 
                 val ft = fragMan.beginTransaction()
 
                 ft.replace(R.id.fragmentMy, quefrag)
+                //ft.addToBackStack(null)
                 ft.commit()
             }
             R.id.nav_load_file -> {
