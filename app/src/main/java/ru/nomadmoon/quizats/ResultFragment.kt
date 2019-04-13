@@ -3,6 +3,7 @@ package ru.nomadmoon.quizats
 
 import android.os.Bundle
 import android.app.Fragment
+import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -26,6 +27,8 @@ class ResultFragment : Fragment() {
         countRightAnswers()
     }
 
+
+    var currentquizdir: String = "-1"
     var questions: ArrayList<quizdata> = arrayListOf(quizdata(-1, arrayOf("")))
     var answers: ArrayList<quizresult> = arrayListOf(quizresult(-1,-1))
 
@@ -41,7 +44,7 @@ class ResultFragment : Fragment() {
 
         val tv = inflated.findViewById<TextView>(R.id.resultTextView)
         val recV = inflated.findViewById<RecyclerView>(R.id.resultRecyclerView)
-        recV.adapter = ResultRecyclerViewAdapter(questions, answers)
+        recV.adapter = ResultRecyclerViewAdapter(questions, answers, currentquizdir)
         recV.layoutManager=LinearLayoutManager(context)
 
         tv.text=resultText

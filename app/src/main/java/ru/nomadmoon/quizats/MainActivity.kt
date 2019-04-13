@@ -396,6 +396,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         resfrag.resultText="Количество правильных ответов: "+rightAnwrsCount
 
+        resfrag.currentquizdir = settings.getString("selected_test", "-1")
         resfrag.setQandA(main_questions, main_answers)
 
 
